@@ -8,7 +8,7 @@
         body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; }
         .clock-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        .nation { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        .nation { font-size: 0.9rem; color: #666; margin-bottom: 5px; font-weight: bold; }
         .city { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; }
         .time { font-size: 1.8rem; font-family: 'Courier New', monospace; color: #007bff; font-weight: bold; }
         .date { font-size: 0.85rem; color: #888; margin-top: 5px; }
@@ -24,19 +24,22 @@
 
     <script>
         const locations = [
-            { label: "🇰🇷 대한민국", city: "서울", tz: "Asia/Seoul" },
-            { label: "🇨🇳 중국(CN)", city: "베이징", tz: "Asia/Shanghai" },
-            { label: "🇸🇬 싱가포르", city: "싱가포르", tz: "Asia/Singapore" },
-            { label: "🇰🇿 카자흐스탄", city: "알마티", tz: "Asia/Almaty" },
-            { label: "🇺🇸 미서부", city: "로스앤젤레스", tz: "America/Los_Angeles" },
-            { label: "🇺🇸 미중서부", city: "시카고", tz: "America/Chicago" },
-            { label: "🇺🇸 미동부", city: "뉴욕", tz: "America/New_York" },
-            { label: "🇬🇧 영국", city: "런던", tz: "Europe/London" },
-            { label: "🇫🇷 프랑스", city: "파리", tz: "Europe/Paris" },
-            { label: "🇨🇭 스위스(CH)", city: "취리히", tz: "Europe/Zurich" },
-            { label: "🇪🇸 스페인(ES)", city: "마드리드", tz: "Europe/Madrid" },
-            { label: "🇦🇺 호주", city: "시드니", tz: "Australia/Sydney" },
-            { label: "🇳🇿 뉴질랜드", city: "오클랜드", tz: "Pacific/Auckland" }
+            { code: "KR", label: "한국", city: "서울", tz: "Asia/Seoul" },
+            { code: "US", label: "미국 (서부)", city: "로스앤젤레스", tz: "America/Los_Angeles" },
+            { code: "US", label: "미국 (중서부)", city: "시카고", tz: "America/Chicago" },
+            { code: "US", label: "미국 (동부)", city: "뉴욕", tz: "America/New_York" },
+            { code: "NZ", label: "뉴질랜드", city: "오클랜드", tz: "Pacific/Auckland" },
+            { code: "SG", label: "싱가포르", city: "싱가포르", tz: "Asia/Singapore" },
+            { code: "MY", label: "말레이시아", city: "쿠알라룸푸르", tz: "Asia/Kuala_Lumpur" },
+            { code: "DK", label: "덴마크", city: "코펜하겐", tz: "Europe/Copenhagen" },
+            { code: "FR", label: "프랑스", city: "파리", tz: "Europe/Paris" },
+            { code: "JP", label: "일본", city: "도쿄", tz: "Asia/Tokyo" },
+            { code: "FJ", label: "피지", city: "수바", tz: "Pacific/Fiji" },
+            { code: "PY", label: "파라과이", city: "아순시온", tz: "America/Asuncion" },
+            { code: "AU", label: "호주", city: "시드니", tz: "Australia/Sydney" },
+            { code: "UK", label: "영국", city: "런던", tz: "Europe/London" },
+            { code: "KZ", label: "카자흐스탄", city: "알마티", tz: "Asia/Almaty" },
+            { code: "CN", label: "중국", city: "베이징", tz: "Asia/Shanghai" }
         ];
 
         function updateClocks() {
@@ -45,17 +48,19 @@
             
             let html = '';
             locations.forEach(loc => {
-                const timeStr = now.toLocaleTimeString('ko-KR', { timeZone: loc.tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const dateStr = now.toLocaleDateString('ko-KR', { timeZone: loc.tz, month: 'long', day: 'numeric', weekday: 'short' });
-                
-                html += `
-                    <div class="clock-card">
-                        <div class="nation">${loc.label}</div>
-                        <div class="city">${loc.city}</div>
-                        <div class="time">${timeStr}</div>
-                        <div class="date">${dateStr}</div>
-                    </div>
-                `;
+                try {
+                    const timeStr = now.toLocaleTimeString('ko-KR', { timeZone: loc.tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const dateStr = now.toLocaleDateString('ko-KR', { timeZone: loc.tz, month: 'long', day: 'numeric', weekday: 'short' });
+                    
+                    html += `
+                        <div class="clock-card">
+                            <div class="nation">[${loc.code}] ${loc.label}</div>
+                            <div class="city">${loc.city}</div>
+                            <div class="time">${timeStr}</div>
+                            <div class="date">${dateStr}</div>
+                        </div>
+                    `;
+                } catch (e) { console.error(e); }
             });
             container.innerHTML = html;
         }
