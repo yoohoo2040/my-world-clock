@@ -3,43 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global World Clock</title>
+    <title>Global Chronology - Eastward Sync</title>
     <style>
-        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; width: 100%; max-width: 1000px; }
-        .clock-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        .nation { font-size: 0.9rem; color: #666; margin-bottom: 5px; font-weight: bold; }
-        .city { font-size: 1.2rem; font-weight: bold; color: #333; margin-bottom: 10px; }
-        .time { font-size: 1.8rem; font-family: 'Courier New', monospace; color: #007bff; font-weight: bold; }
-        .date { font-size: 0.85rem; color: #888; margin-top: 5px; }
-        h1 { margin-bottom: 30px; color: #1a1a1a; }
-        .footer { margin-top: 30px; font-size: 0.8rem; color: #aaa; }
+        body { font-family: 'Apple SD Gothic Neo', sans-serif; background: #0f172a; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; color: #f8fafc; }
+        .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 1200px; }
+        .clock-card { background: #1e293b; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); text-align: center; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .nation { font-size: 0.85rem; color: #94a3b8; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .city { font-size: 1.4rem; font-weight: bold; color: #f1f5f9; margin-bottom: 12px; }
+        .time { font-size: 2rem; font-family: 'Courier New', monospace; color: #38bdf8; font-weight: bold; }
+        .date { font-size: 0.9rem; color: #64748b; margin-top: 8px; }
+        .offset { font-size: 0.75rem; color: #38bdf8; margin-top: 5px; opacity: 0.8; }
+        h1 { margin-bottom: 40px; color: #f1f5f9; font-size: 2.5rem; text-align: center; }
+        h1 span { color: #38bdf8; }
+        .footer { margin-top: 40px; font-size: 0.85rem; color: #64748b; padding-bottom: 40px; }
+        .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, #38bdf8, transparent); margin: 30px 0; grid-column: 1 / -1; display: flex; justify-content: center; align-items: center; }
+        .divider span { background: #0f172a; padding: 0 15px; font-size: 0.7rem; color: #38bdf8; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>🌍 실시간 세계 시간</h1>
+    <h1>🌍 <span>동진(Eastward)</span> 세계 시각 순서</h1>
+    
     <div class="container" id="clock-container"></div>
-    <div class="footer">※ 서머타임이 실시간으로 반영된 시각입니다.</div>
+    
+    <div class="footer">※ 한국(KST)을 기점으로 동쪽으로 이동하며 날짜변경선을 통과하는 순서입니다.</div>
 
     <script>
         const locations = [
-            { code: "KR", label: "한국", city: "서울", tz: "Asia/Seoul" },
-            { code: "US", label: "미국 (서부)", city: "로스앤젤레스", tz: "America/Los_Angeles" },
-            { code: "US", label: "미국 (중서부)", city: "시카고", tz: "America/Chicago" },
-            { code: "US", label: "미국 (동부)", city: "뉴욕", tz: "America/New_York" },
-            { code: "NZ", label: "뉴질랜드", city: "오클랜드", tz: "Pacific/Auckland" },
-            { code: "SG", label: "싱가포르", city: "싱가포르", tz: "Asia/Singapore" },
-            { code: "MY", label: "말레이시아", city: "쿠알라룸푸르", tz: "Asia/Kuala_Lumpur" },
-            { code: "DE", label: "독일", city: "베를린", tz: "Europe/Berlin" },
-            { code: "FR", label: "프랑스", city: "파리", tz: "Europe/Paris" },
-            { code: "JP", label: "일본", city: "도쿄", tz: "Asia/Tokyo" },
-            { code: "FJ", label: "피지", city: "수바", tz: "Pacific/Fiji" },
-            { code: "PY", label: "파라과이", city: "아순시온", tz: "America/Asuncion" },
-            { code: "AU", label: "호주", city: "시드니", tz: "Australia/Sydney" },
-            { code: "UK", label: "영국", city: "런던", tz: "Europe/London" },
-            { code: "KZ", label: "카자흐스탄", city: "알마티", tz: "Asia/Almaty" },
-            { code: "CN", label: "중국", city: "베이징", tz: "Asia/Shanghai" }
+            // [1] 동아시아 & 오세아니아 (KST +0 ~ +4)
+            { code: "KR", label: "한국", city: "서울", tz: "Asia/Seoul", offset: "KST +0" },
+            { code: "JP", label: "일본", city: "도쿄", tz: "Asia/Tokyo", offset: "KST +0" },
+            { code: "AU", label: "호주", city: "시드니", tz: "Australia/Sydney", offset: "KST +1" },
+            { code: "FJ", label: "피지", city: "수바", tz: "Pacific/Fiji", offset: "KST +3" },
+            { code: "NZ", label: "뉴질랜드", city: "오클랜드", tz: "Pacific/Auckland", offset: "KST +3" },
+            
+            { type: "divider", label: "--- INTERNATIONAL DATE LINE ---" },
+            
+            // [2] 아메리카 (날짜변경선 통과 후)
+            { code: "US", label: "미국 (태평양)", city: "로스앤젤레스", tz: "America/Los_Angeles", offset: "KST -17" },
+            { code: "US", label: "미국 (산악)", city: "덴버", tz: "America/Denver", offset: "KST -16" },
+            { code: "US", label: "미국 (중부)", city: "시카고", tz: "America/Chicago", offset: "KST -15" },
+            { code: "US", label: "미국 (동부)", city: "뉴욕", tz: "America/New_York", offset: "KST -14" },
+            { code: "PY", label: "파라과이", city: "아순시온", tz: "America/Asuncion", offset: "KST -13" },
+            
+            { type: "divider", label: "--- ATLANTIC OCEAN ---" },
+
+            // [3] 유럽 & 아시아 복귀 (유럽을 거쳐 서쪽에서 한국으로 접근)
+            { code: "UK", label: "영국", city: "런던", tz: "Europe/London", offset: "KST -9" },
+            { code: "FR", label: "프랑스", city: "파리", tz: "Europe/Paris", offset: "KST -8" },
+            { code: "DE", label: "독일", city: "베를린", tz: "Europe/Berlin", offset: "KST -8" },
+            { code: "KZ", label: "카자흐스탄", city: "알마티", tz: "Asia/Almaty", offset: "KST -4" },
+            { code: "CN", label: "중국", city: "베이징", tz: "Asia/Shanghai", offset: "KST -1" },
+            { code: "SG", label: "싱가포르", city: "싱가포르", tz: "Asia/Singapore", offset: "KST -1" },
+            { code: "MY", label: "말레이시아", city: "쿠알라룸푸르", tz: "Asia/Kuala_Lumpur", offset: "KST -1" }
         ];
 
         function updateClocks() {
@@ -48,6 +64,10 @@
             
             let html = '';
             locations.forEach(loc => {
+                if (loc.type === "divider") {
+                    html += `<div class="divider"><span>${loc.label}</span></div>`;
+                    return;
+                }
                 try {
                     const timeStr = now.toLocaleTimeString('ko-KR', { timeZone: loc.tz, hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
                     const dateStr = now.toLocaleDateString('ko-KR', { timeZone: loc.tz, month: 'long', day: 'numeric', weekday: 'short' });
@@ -58,6 +78,7 @@
                             <div class="city">${loc.city}</div>
                             <div class="time">${timeStr}</div>
                             <div class="date">${dateStr}</div>
+                            <div class="offset">${loc.offset}</div>
                         </div>
                     `;
                 } catch (e) { console.error(e); }
@@ -65,8 +86,8 @@
             container.innerHTML = html;
         }
 
-        setInterval(updateClocks, 1000);
-        updateClocks();
-    </script>
-</body>
+            setInterval(updateClocks, 1000);
+            updateClocks();
+        </script>
+    </body>
 </html>
